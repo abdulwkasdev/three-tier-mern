@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  backend: 
+    build:
+      context: ./backend 
+    container_name: backend
+    env_file:
+      - ./.env.backend
+    ports:
+      - '5000:5000'
+    depends_on:
+      - mongo
+  frontend: 
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_BASE_URL=http://localhost:5000/api
+    container_name: frontend
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+  mongo: 
+    image: mongo
+    container_name: mongodb
+    env_file:
+      - ./.env.mongo
+    volumes:
+      - dbdata:/data/db
+
+volumes:
+  dbdata: 
